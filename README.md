@@ -15,7 +15,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Generate GoDoc
-      uses: 
+      uses: ktr0731/godoc-action@v0.1.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Push changes
@@ -23,5 +23,4 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
-        force: true
 ```
