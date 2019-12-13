@@ -19,7 +19,7 @@ for (( ; ; )); do
   fi
 done
 
-git checkout gh-pages
+git checkout origin/gh-pages || git checkout -b gh-pages
 
 wget --quiet --mirror --show-progress --page-requisites --execute robots=off --no-parent "http://localhost:8080/pkg/$MODULE_ROOT/"
 
@@ -37,10 +37,8 @@ git commit -m "Update documentation"
 
 GODOC_URL="https://$(dirname $(echo $GITHUB_REPOSITORY)).github.io/$REPO_NAME/$PR_NUMBER/pkg/$MODULE_ROOT/index.html"
 
-curl -H "Authorization: token $GITHUB_TOKEN" \
-  "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" | grep '## GoDoc' > /dev/null
-if [[ $? -ne 0 ]]; then
-  curl -H "Authorization: token $GITHUB_TOKEN" \
+if ! curl -sH "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" | grep '## GoDoc' > /dev/null; then
+  curl -sH "Authorization: token $GITHUB_TOKEN" \
     -d '{ "body": "## GoDoc\n'"$GODOC_URL"'" }' \
     "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments"
 fi
